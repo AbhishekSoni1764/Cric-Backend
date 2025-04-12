@@ -1,13 +1,31 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
+from typing import Optional
+from bson import ObjectId
+from app.config.database import db
+from app.models.venue import Venue
 
 router = APIRouter()
 
 
-@router.get("/venues/")
-async def list_venues():
-    return {"message": "Venues endpoint (TBD)"}
+@router.get("/venues/", response_model=list[Venue])
+async def list_venues(city: Optional[str] = None, country: Optional[str] = None):
+    query = {}
+    if city:
+        query["city"] = city
+    if country:
+        query["country"] = country
+
+    venues = await db.db["venues"].find(query).to_list(100)
+    if not venues:
+        return []
+
+    return [Venue(**v) for v in venues]
 
 
-@router.get("/venues/{venue_id}")
+@router.get("/venues/{venue_id}", response_model=Venue)
 async def get_venue(venue_id: str):
-    return {"message": f"Venue {venue_id} endpoint (TBD)"}
+    venue = await db.db["venues"].find_one({"_id": ObjectId(venue_id)})
+    if not venue:
+        raise HTTPException(status_code=404, detail="Venue not found")
+
+    return Venue(**venue)
