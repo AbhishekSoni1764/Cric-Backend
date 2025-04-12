@@ -7,10 +7,9 @@ class AnalyticsService:
     async def calculate_batting_stats(
         self, player_id: str, venue_id: Optional[str] = None
     ):
-        # Placeholder: Query MongoDB for batting stats
-        query = {"player_id": ObjectId(player_id)}
+        query = {"player_id": player_id}
         if venue_id:
-            query["venue_id"] = ObjectId(venue_id)
+            query["venue_id"] = venue_id
 
         performances = await db.db["playerPerformances"].find(query).to_list(None)
         if not performances:
@@ -42,10 +41,9 @@ class AnalyticsService:
     async def calculate_bowling_stats(
         self, player_id: str, venue_id: Optional[str] = None
     ):
-        # Placeholder: Query MongoDB for bowling stats
-        query = {"player_id": ObjectId(player_id)}
+        query = {"player_id": player_id}
         if venue_id:
-            query["venue_id"] = ObjectId(venue_id)
+            query["venue_id"] = venue_id
 
         performances = await db.db["playerPerformances"].find(query).to_list(None)
         if not performances:
@@ -72,9 +70,7 @@ class AnalyticsService:
         return {"economy": round(economy, 2), "wickets": total_wickets}
 
     async def detect_collapses(self, match_id: str):
-        # Placeholder: Detect batting collapses
-        # Assume collapse = 3+ wickets in 5 overs
-        analytics = await db.db["analytics"].find_one({"match_id": ObjectId(match_id)})
+        analytics = await db.db["analytics"].find_one({"match_id": match_id})
         if not analytics or not analytics.get("collapses"):
             return []
 
@@ -88,10 +84,9 @@ class AnalyticsService:
         ]
 
     async def get_player_form(self, player_id: str, last_n_matches: int = 5):
-        # Placeholder: Get recent performance trends
         performances = (
             await db.db["playerPerformances"]
-            .find({"player_id": ObjectId(player_id)})
+            .find({"player_id": player_id})
             .sort("created_at", -1)
             .limit(last_n_matches)
             .to_list(None)
