@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException
 from typing import Optional
-from bson import ObjectId
 from app.config.database import db
 from app.models.venue import Venue
 
@@ -24,7 +23,7 @@ async def list_venues(city: Optional[str] = None, country: Optional[str] = None)
 
 @router.get("/venues/{venue_id}", response_model=Venue)
 async def get_venue(venue_id: str):
-    venue = await db.db["venues"].find_one({"_id": ObjectId(venue_id)})
+    venue = await db.db["venues"].find_one({"venue_id": venue_id})
     if not venue:
         raise HTTPException(status_code=404, detail="Venue not found")
 

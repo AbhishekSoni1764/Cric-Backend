@@ -1,10 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from typing import Optional
 from datetime import datetime
-from bson import ObjectId
 from app.config.database import db
 from app.models.match import Match
-from app.schemas.match import MatchSchema
 
 router = APIRouter()
 
@@ -24,7 +22,7 @@ async def list_matches(
     if tournament:
         query["tournament"] = tournament
 
-    matches = await db.db["matches"].find(query).to_list(100)  # Limit to 100 for now
+    matches = await db.db["matches"].find(query).to_list(100)
     if not matches:
         return []
 
@@ -33,7 +31,7 @@ async def list_matches(
 
 @router.get("/matches/{match_id}", response_model=Match)
 async def get_match(match_id: str):
-    match = await db.db["matches"].find_one({"_id": ObjectId(match_id)})
+    match = await db.db["matches"].find_one({"match_id": match_id})
     if not match:
         raise HTTPException(status_code=404, detail="Match not found")
 

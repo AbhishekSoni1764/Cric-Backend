@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException
 from typing import Optional
-from bson import ObjectId
 from app.services.analytics_service import analytics_service
 
 router = APIRouter()
