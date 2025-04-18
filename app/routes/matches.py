@@ -9,16 +9,9 @@ router = APIRouter()
 
 @router.get("/matches/", response_model=list[Match])
 async def list_matches(
-    date_from: Optional[str] = None,
-    date_to: Optional[str] = None,
     tournament: Optional[str] = None,
 ):
     query = {}
-    if date_from:
-        query["date"] = {"$gte": datetime.fromisoformat(date_from)}
-    if date_to:
-        query["date"] = query.get("date", {})
-        query["date"]["$lte"] = datetime.fromisoformat(date_to)
     if tournament:
         query["tournament"] = tournament
 

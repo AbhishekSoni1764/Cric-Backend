@@ -29,10 +29,10 @@ class PlayerPerformance(BaseModel):
 
 class TeamPerformance(BaseModel):
     team_id: str
-    venue_id: str
+    team_name: str
+    venue_id: Optional[str] = None
     format: str
     matches_played: int
     wins: int
     losses: int
     win_percentage: float
-    average_score: Optional[float] = None

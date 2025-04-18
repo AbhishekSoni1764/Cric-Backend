@@ -3,11 +3,12 @@ from typing import Optional
 from app.config.database import db
 from app.models.player import Player
 from app.services.analytics_service import analytics_service
+from typing import List
 
 router = APIRouter()
 
 
-@router.get("/players/", response_model=list[Player])
+@router.get("/players/", response_model=List[Player])
 async def list_players(season: Optional[str] = None, venue_id: Optional[str] = None):
     query = {}
     if season:
@@ -22,10 +23,9 @@ async def list_players(season: Optional[str] = None, venue_id: Optional[str] = N
 
     if venue_id:
         for player in players:
-            stats = await analytics_service.calculate_batting_stats(
+            player["batting_stats"] = await analytics_service.calculate_batting_stats(
                 player["player_id"], venue_id
             )
-            player["batting_stats"] = stats
             player["bowling_stats"] = await analytics_service.calculate_bowling_stats(
                 player["player_id"], venue_id
             )
